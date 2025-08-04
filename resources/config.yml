@@ -1,0 +1,12 @@
+settings:
+  always-days: true
+
+lobby:
+  world:
+    name: "world"
+    protection: true
+    damage: false
+    hunger: false
+  auto-teleport:
+    enable: false
+    location: []

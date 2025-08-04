@@ -1,0 +1,14 @@
+---
+name: OGPractice
+version: 0.0.1
+main: kazamaryota\OGPractice\OGPractice
+api: 4.2.10
+src-namespace-prefix: kazamaryota\OGPractice
+permissions:
+  ogpractice.command.battle.kit:
+    default: op
+  ogpractice.command.freeforall:
+    default: true
+  ogpractice.command.lobby:
+    default: true
+...
