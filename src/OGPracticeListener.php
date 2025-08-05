@@ -127,10 +127,7 @@ class OGPracticeListener implements Listener, PluginOwned
     public function onPlayerInteract(PlayerInteractEvent $event): void
     {
         if ($event->getItem()->getId() === ItemIds::GOLDEN_AXE) {
-            BattleFactory::getInstance()
-                ->getFreeForAll(BattleKitFactory::getInstance()
-                    ->getBattleKit('fist')
-                )->addPlayer($event->getPlayer());
+            $this->owningPlugin->getServer()->dispatchCommand($event->getPlayer(), 'ffa');
         }
     }
 

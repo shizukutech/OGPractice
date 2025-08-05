@@ -6,6 +6,7 @@ namespace kazamaryota\OGPractice\battle\arena;
 
 use kazamaryota\OGPractice\battle\arena\provider\FreeForAllArenaProvider;
 use kazamaryota\OGPractice\battle\kit\BattleKit;
+use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 use pocketmine\Server;
 
 final class ArenaFactory
@@ -30,24 +31,28 @@ final class ArenaFactory
                 return $arena;
             }
         }
-        $result = null;
-        foreach ($this->freeForAllArenaProvider->getFreeForAllArenas() as $arena) {
-            if ($arena['battleKit'] === $kit->getName() && isset($arena['world'])) {
-                $worldManager = Server::getInstance()->getWorldManager();
-                if ($worldManager->isWorldGenerated($arena['world']) && !$worldManager->isWorldLoaded($arena['world'])) {
-                    $worldManager->loadWorld($arena['world'], true);
-                }
-                $result = new FreeForAllArena(
-                    $kit,
-                    $worldManager->getWorldByName($arena['world'])
-                );
-            }
-        }
-        return $result;
+        return null;
     }
 
     public function setFreeForAllArenaProvider(FreeForAllArenaProvider $freeForAllArenaProvider): void
     {
         $this->freeForAllArenaProvider = $freeForAllArenaProvider;
+        foreach ($this->freeForAllArenaProvider->getFreeForAllArenas() as $arena) {
+            if (isset($arena['battleKit'], $arena['world'])) {
+                $battleKit = BattleKitFactory::getInstance()->getBattleKit($arena['battleKit']);
+                if ($battleKit === null) {
+                    continue;
+                }
+
+                $worldManager = Server::getInstance()->getWorldManager();
+                if ($worldManager->isWorldGenerated($arena['world']) && !$worldManager->isWorldLoaded($arena['world'])) {
+                    $worldManager->loadWorld($arena['world'], true);
+                }
+                $this->freeForAllArenas[] = new FreeForAllArena(
+                    $battleKit,
+                    $worldManager->getWorldByName($arena['world'])
+                );
+            }
+        }
     }
 }

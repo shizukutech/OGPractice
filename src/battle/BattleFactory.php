@@ -6,6 +6,7 @@ namespace kazamaryota\OGPractice\battle;
 
 use kazamaryota\OGPractice\battle\arena\ArenaFactory;
 use kazamaryota\OGPractice\battle\kit\BattleKit;
+use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 
 final class BattleFactory
 {
@@ -17,6 +18,11 @@ final class BattleFactory
     {
         if (self::$instance === null) {
             self::$instance = new self();
+            foreach (BattleKitFactory::getInstance()->getBattleKits() as $battleKit) {
+                if ($arena = ArenaFactory::getInstance()->getFreeForAllArena($battleKit)) {
+                    self::$instance->freeForAlls[] = new FreeForAll($battleKit, $arena);
+                }
+            }
         }
         return self::$instance;
     }
@@ -28,11 +34,12 @@ final class BattleFactory
                 return $freeForAll;
             }
         }
-        $freeForAll = null;
-        if (($arena = ArenaFactory::getInstance()->getFreeForAllArena($kit)) !== null) {
-            $this->freeForAlls[] = $freeForAll = new FreeForAll($kit, $arena);
-        }
+        return null;
+    }
 
-        return $freeForAll;
+    /** @return FreeForAll[] */
+    public function getFreeForAlls(): array
+    {
+        return $this->freeForAlls;
     }
 }

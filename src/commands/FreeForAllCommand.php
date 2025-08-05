@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace kazamaryota\OGPractice\commands;
 
 use kazamaryota\OGPractice\battle\BattleFactory;
+use kazamaryota\OGPractice\battle\FreeForAll;
 use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 use kazamaryota\OGPractice\OGPractice;
+use kazamaryota\OGPractice\pmforms\MenuForm;
+use kazamaryota\OGPractice\pmforms\MenuOption;
 use pocketmine\command\CommandSender;
-use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+use function array_map;
 use function count;
 
 class FreeForAllCommand extends OGPracticeCommand
@@ -33,7 +36,26 @@ class FreeForAllCommand extends OGPracticeCommand
         }
 
         if (count($args) === 0) {
-            throw new InvalidCommandSyntaxException();
+            /** @var FreeForAll[] $freeForAlls */
+            $freeForAlls = [];
+            foreach (BattleFactory::getInstance()->getFreeForAlls() as $freeForAll) {
+                $freeForAlls[] = $freeForAll;
+            }
+
+            $sender->sendForm(new MenuForm(
+                TextFormat::RED . 'Free For All',
+                '',
+                array_map(function ($freeForAll) {
+                    return new MenuOption($freeForAll->getKit()->getName());
+                }, $freeForAlls),
+                function (Player $player, int $selectedOption) use ($freeForAlls): void {
+                    if (isset($freeForAlls[$selectedOption])) {
+                        $freeForAlls[$selectedOption]->addPlayer($player);
+                    }
+                }
+            ));
+
+            return true;
         }
 
         $kit = BattleKitFactory::getInstance()->getBattleKit($args[0]);
