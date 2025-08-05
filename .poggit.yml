@@ -1,0 +1,9 @@
+build-by-default: true
+branches:
+  - master
+projects:
+  OGPractice:
+    path: ""
+    libs:
+      - src: dktapps-pm-pl/pmforms/pmforms
+        version: ^2.1.0
