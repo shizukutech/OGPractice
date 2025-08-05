@@ -7,8 +7,11 @@ namespace kazamaryota\OGPractice\battle\kit;
 use kazamaryota\OGPractice\battle\kit\inventory\KitArmorInventory;
 use kazamaryota\OGPractice\battle\kit\inventory\KitPlayerInventory;
 use kazamaryota\OGPractice\battle\profile\BattleProfile;
+use kazamaryota\OGPractice\pmforms\MenuOption;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
+use function ucwords;
 
 class BattleKit implements Kit
 {
@@ -17,14 +20,16 @@ class BattleKit implements Kit
     private KitArmorInventory $armorInventory;
     private BattleProfile $battleProfile;
     private KitPlayerInventory $inventory;
+    private MenuOption $menuOption;
     private string $name;
 
-    public function __construct(string $name)
+    public function __construct(string $name, ?MenuOption $menuOption = null)
     {
         $this->name = $name;
         $this->armorInventory = new KitArmorInventory($this);
         $this->battleProfile = new BattleProfile($this);
         $this->inventory = new KitPlayerInventory($this);
+        $this->menuOption = $menuOption ?? new MenuOption(TextFormat::BOLD . ucwords($this->name));
     }
 
     public static function fromPlayer(Player $player): ?self
@@ -55,6 +60,11 @@ class BattleKit implements Kit
         return $this->inventory;
     }
 
+    public function getMenuOption(): MenuOption
+    {
+        return $this->menuOption;
+    }
+
     public function getName(): string
     {
         return $this->name;
@@ -76,6 +86,7 @@ class BattleKit implements Kit
     {
         return [
             'name' => $this->name,
+            'menuOption' => $this->menuOption->jsonSerialize(),
             'inventory' => $this->inventory->jsonSerialize(),
             'helmet' => $this->armorInventory->getHelmet()->jsonSerialize(),
             'chestplate' => $this->armorInventory->getChestplate()->jsonSerialize(),

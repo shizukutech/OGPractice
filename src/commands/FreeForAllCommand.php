@@ -43,10 +43,16 @@ class FreeForAllCommand extends OGPracticeCommand
             }
 
             $sender->sendForm(new MenuForm(
-                TextFormat::RED . 'Free For All',
+                TextFormat::BOLD . 'Free For All',
                 '',
                 array_map(function ($freeForAll) {
-                    return new MenuOption($freeForAll->getKit()->getName());
+                    $menuOption = $freeForAll->getKit()->getMenuOption();
+                    return new MenuOption(
+                        $menuOption->getText() . TextFormat::RESET . "\n"
+                        . TextFormat::DARK_GRAY . 'In Fighting: '
+                        . TextFormat::GREEN . count($freeForAll->getPlayers()),
+                        $menuOption->getImage()
+                    );
                 }, $freeForAlls),
                 function (Player $player, int $selectedOption) use ($freeForAlls): void {
                     if (isset($freeForAlls[$selectedOption])) {
