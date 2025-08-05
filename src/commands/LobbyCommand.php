@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace kazamaryota\OGPractice\commands;
 
-use kazamaryota\OGPractice\battle\BattleFactory;
+use kazamaryota\OGPractice\battle\Battle;
 use kazamaryota\OGPractice\OGPractice;
 use pocketmine\command\CommandSender;
 use pocketmine\item\VanillaItems;
@@ -32,7 +32,7 @@ class LobbyCommand extends OGPracticeCommand
             return true;
         }
 
-        if ($battle = BattleFactory::getInstance()->getBattleByPlayer($sender)) {
+        if ($battle = Battle::fromPlayer($sender)) {
             $battle->removePlayer($sender);
         } else {
             $this->getOwningPlugin()->teleportPlayerToLobby($sender);

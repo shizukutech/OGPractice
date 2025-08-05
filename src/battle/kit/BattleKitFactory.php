@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace kazamaryota\OGPractice\battle\kit;
 
 use pocketmine\item\Item;
-use pocketmine\player\Player;
-use function in_array;
 use function is_array;
 
 final class BattleKitFactory
@@ -36,16 +34,6 @@ final class BattleKitFactory
     {
         foreach ($this->battleKits as $battleKit) {
             if ($battleKit->getName() === $name) {
-                return $battleKit;
-            }
-        }
-        return null;
-    }
-
-    public function getBattleKitByPlayer(Player $player): ?BattleKit
-    {
-        foreach ($this->battleKits as $battleKit) {
-            if (in_array($player, $battleKit->getPlayers())) {
                 return $battleKit;
             }
         }

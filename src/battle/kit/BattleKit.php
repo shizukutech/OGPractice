@@ -8,15 +8,16 @@ use kazamaryota\OGPractice\battle\kit\inventory\KitArmorInventory;
 use kazamaryota\OGPractice\battle\kit\inventory\KitPlayerInventory;
 use kazamaryota\OGPractice\battle\profile\BattleProfile;
 use pocketmine\player\Player;
+use pocketmine\Server;
 
 class BattleKit implements Kit
 {
+    /** @var array<string, self> */
+    private static array $playerEntry = [];
     private KitArmorInventory $armorInventory;
     private BattleProfile $battleProfile;
     private KitPlayerInventory $inventory;
     private string $name;
-    /** @var array<string, Player> */
-    private array $players = [];
 
     public function __construct(string $name)
     {
@@ -26,9 +27,14 @@ class BattleKit implements Kit
         $this->inventory = new KitPlayerInventory($this);
     }
 
+    public static function fromPlayer(Player $player): ?self
+    {
+        return self::$playerEntry[$player->getUniqueId()->getBytes()] ?? null;
+    }
+
     public function addPlayer(Player $player): void
     {
-        $this->players[$player->getUniqueId()->getBytes()] = $player;
+        self::$playerEntry[$player->getUniqueId()->getBytes()] = $this;
 
         $player->getArmorInventory()->setContents($this->armorInventory->getContents());
         $player->getInventory()->setContents($this->inventory->getContents());
@@ -57,7 +63,13 @@ class BattleKit implements Kit
     /** @return array<string, Player> */
     public function getPlayers(): array
     {
-        return $this->players;
+        $players = [];
+        foreach (self::$playerEntry as $playerId => $battleKit) {
+            if ($battleKit === $this) {
+                $players[$playerId] = Server::getInstance()->getPlayerByRawUUID($playerId);
+            }
+        }
+        return $players;
     }
 
     public function jsonSerialize(): array
@@ -75,7 +87,7 @@ class BattleKit implements Kit
 
     public function removePlayer(Player $player): void
     {
-        unset($this->players[$player->getUniqueId()->getBytes()]);
+        unset(self::$playerEntry[$player->getUniqueId()->getBytes()]);
 
         $player->getArmorInventory()->clearAll();
         $player->getInventory()->clearAll();

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace kazamaryota\OGPractice;
 
+use kazamaryota\OGPractice\battle\Battle;
 use kazamaryota\OGPractice\battle\BattleFactory;
+use kazamaryota\OGPractice\battle\kit\BattleKit;
 use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -70,7 +72,7 @@ class OGPracticeListener implements Listener, PluginOwned
             }
 
             // About battle profile
-            $battleKit = BattleKitFactory::getInstance()->getBattleKitByPlayer($entity);
+            $battleKit = BattleKit::fromPlayer($entity);
             if ($battleKit !== null) {
                 $event->setAttackCooldown($battleKit->getBattleProfile()->getAttackCooldown());
             }
@@ -82,7 +84,7 @@ class OGPracticeListener implements Listener, PluginOwned
     {
         $entity = $event->getEntity();
         if ($entity instanceof Player) {
-            $battleKit = BattleKitFactory::getInstance()->getBattleKitByPlayer($entity);
+            $battleKit = BattleKit::fromPlayer($entity);
             if ($battleKit !== null) {
                 $knockBack = $battleKit->getBattleProfile()->getKnockBack();
                 $event->getVector()->x *= $knockBack->getHorizontal() / 0.4;
@@ -104,7 +106,7 @@ class OGPracticeListener implements Listener, PluginOwned
     /** @priority MONITOR */
     public function onPlayerDeath(PlayerDeathEvent $event): void
     {
-        if ($battle = BattleFactory::getInstance()->getBattleByPlayer($event->getPlayer())) {
+        if ($battle = Battle::fromPlayer($event->getPlayer())) {
             $battle->onPlayerDeath($event);
         }
     }
@@ -144,7 +146,7 @@ class OGPracticeListener implements Listener, PluginOwned
     /** @priority NORMAL */
     public function onPlayerRespawn(PlayerRespawnEvent $event): void
     {
-        if ($battle = BattleFactory::getInstance()->getBattleByPlayer($event->getPlayer())) {
+        if ($battle = Battle::fromPlayer($event->getPlayer())) {
             $battle->onPlayerRespawn($event);
             return;
         }
@@ -156,7 +158,7 @@ class OGPracticeListener implements Listener, PluginOwned
     /** @priority MONITOR */
     public function onPlayerQuit(PlayerQuitEvent $event): void
     {
-        if ($battle = BattleFactory::getInstance()->getBattleByPlayer($event->getPlayer())) {
+        if ($battle = Battle::fromPlayer($event->getPlayer())) {
             $battle->onPlayerQuit($event);
         }
         $event->setQuitMessage("[" . TextFormat::RED . "-" . TextFormat::WHITE . "] " . $event->getPlayer()->getName());

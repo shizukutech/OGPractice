@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace kazamaryota\OGPractice\commands;
 
+use kazamaryota\OGPractice\battle\kit\BattleKit;
 use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 use kazamaryota\OGPractice\OGPractice;
 use pocketmine\command\CommandSender;
@@ -53,7 +54,7 @@ class BattleKitCommand extends OGPracticeCommand
                             $sender->sendMessage(TextFormat::RED . 'Please provide a player!');
                             return true;
                         }
-                        $battleKit = BattleKitFactory::getInstance()->getBattleKitByPlayer($sender);
+                        $battleKit = BattleKit::fromPlayer($sender);
                         if ($battleKit === null) {
                             $sender->sendMessage('You are not load any battle kit!');
                             return true;
@@ -83,7 +84,7 @@ class BattleKitCommand extends OGPracticeCommand
                         $sender->sendMessage(TextFormat::RED . 'Please provide a player!');
                         return true;
                     }
-                    $battleKit = BattleKitFactory::getInstance()->getBattleKitByPlayer($sender);
+                    $battleKit = BattleKit::fromPlayer($sender);
                     if ($battleKit === null) {
                         $sender->sendMessage('You are not load any battle kit!');
                         return true;

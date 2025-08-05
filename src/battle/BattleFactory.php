@@ -6,8 +6,6 @@ namespace kazamaryota\OGPractice\battle;
 
 use kazamaryota\OGPractice\battle\arena\ArenaFactory;
 use kazamaryota\OGPractice\battle\kit\BattleKit;
-use pocketmine\player\Player;
-use function in_array;
 
 final class BattleFactory
 {
@@ -36,15 +34,5 @@ final class BattleFactory
         }
 
         return $freeForAll;
-    }
-
-    public function getBattleByPlayer(Player $player): ?Battle
-    {
-        foreach ($this->freeForAlls as $freeForAll) {
-            if (in_array($player, $freeForAll->getPlayers())) {
-                return $freeForAll;
-            }
-        }
-        return null;
     }
 }
