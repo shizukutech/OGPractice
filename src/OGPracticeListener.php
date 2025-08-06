@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace kazamaryota\OGPractice;
 
 use kazamaryota\OGPractice\battle\Battle;
-use kazamaryota\OGPractice\battle\BattleFactory;
 use kazamaryota\OGPractice\battle\kit\BattleKit;
-use kazamaryota\OGPractice\battle\kit\BattleKitFactory;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -20,9 +18,12 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\player\PlayerRespawnEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\world\WorldLoadEvent;
 use pocketmine\item\ItemIds;
+use pocketmine\item\ProjectileItem;
 use pocketmine\item\VanillaItems;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\utils\TextFormat;
@@ -40,6 +41,17 @@ class OGPracticeListener implements Listener, PluginOwned
     public function getOwningPlugin(): OGPractice
     {
         return $this->owningPlugin;
+    }
+
+    /** @priority MONITOR */
+    public function onDataPacketReceive(DataPacketReceiveEvent $event): void
+    {
+        if ($event->getPacket()->pid() === ProtocolInfo::ANIMATE_PACKET) {
+            $player = $event->getOrigin()->getPlayer();
+            if ($player->getInventory()->getItemInHand() instanceof ProjectileItem) {
+                $player->useHeldItem();
+            }
+        }
     }
 
     /** @priority MONITOR */
