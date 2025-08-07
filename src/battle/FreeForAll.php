@@ -79,7 +79,7 @@ class FreeForAll extends Battle
                     . TextFormat::GRAY . ' was slain by '
                     . TextFormat::GREEN . $damager->getName()
                     . TextFormat::WHITE . ' ['
-                    . TextFormat::RED . $damager->getHealth() . '❤'
+                    . TextFormat::RED . round($damager->getHealth(), 1) . '❤'
                     . TextFormat::WHITE . ']'
                 );
 
