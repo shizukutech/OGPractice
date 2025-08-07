@@ -11,14 +11,12 @@ use pocketmine\entity\effect\InstantEffect;
 use pocketmine\entity\Living;
 use pocketmine\entity\projectile\SplashPotion;
 use pocketmine\event\entity\ProjectileHitBlockEvent;
-use pocketmine\event\entity\ProjectileHitEntityEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\item\PotionType;
 use pocketmine\world\particle\PotionSplashParticle;
 use pocketmine\world\sound\PotionSplashSound;
 use function count;
 use function round;
-use function sqrt;
 
 class OGSplashPotionEntity extends SplashPotion
 {
@@ -53,10 +51,7 @@ class OGSplashPotionEntity extends SplashPotion
                             continue;
                         }
 
-                        $distanceMultiplier = 1 - (sqrt($distanceSquared) / 16);
-                        if ($event instanceof ProjectileHitEntityEvent && $entity === $event->getEntityHit()) {
-                            $distanceMultiplier = 1.0;
-                        }
+                        $distanceMultiplier = 1.0;
 
                         foreach ($this->getPotionEffects() as $effect) {
                             // getPotionEffects() is used to get COPIES to avoid accidentally modifying the same effect instance already applied to another entity
