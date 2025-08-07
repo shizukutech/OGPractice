@@ -174,7 +174,6 @@ class OGPracticeListener implements Listener, PluginOwned
     }
 
     /** @priority NORMAL */
-
     public function onPlayerChat(PlayerChatEvent $event): void
     {
         $player = $event->getPlayer();

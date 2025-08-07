@@ -12,7 +12,13 @@ use kazamaryota\OGPractice\commands\BattleKitCommand;
 use kazamaryota\OGPractice\commands\FreeForAllCommand;
 use kazamaryota\OGPractice\commands\LobbyCommand;
 use kazamaryota\OGPractice\commands\OGPracticeCommand;
+use kazamaryota\OGPractice\item\OGSplashPotion;
+use pocketmine\data\bedrock\PotionTypeIdMap;
 use pocketmine\entity\Location;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIdentifier;
+use pocketmine\item\ItemIds;
+use pocketmine\item\PotionType;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
@@ -69,6 +75,19 @@ class OGPractice extends PluginBase
 
         BattleKitFactory::getInstance()->setProvider(new BattleKitProvider($this));
         ArenaFactory::getInstance()->setFreeForAllArenaProvider(new FreeForAllArenaProvider($this));
+
+        foreach (PotionType::getAll() as $type) {
+            $typeId = PotionTypeIdMap::getInstance()->toId($type);
+            ItemFactory::getInstance()->remap(
+                new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId),
+                new OGSplashPotion(
+                    new ItemIdentifier(ItemIds::SPLASH_POTION, $typeId),
+                    $type->getDisplayName() . ' Splash Potion',
+                    $type
+                ),
+                true
+            );
+        }
 
         $this->getServer()->getPluginManager()->registerEvents(new OGPracticeListener($this), $this);
     }

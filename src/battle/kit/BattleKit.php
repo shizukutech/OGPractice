@@ -84,9 +84,16 @@ class BattleKit implements Kit
 
     public function jsonSerialize(): array
     {
+        $menuOption = [
+            'text' => $this->menuOption->getText()
+        ];
+        if ($this->menuOption->hasImage()) {
+            $menuOption['image'] = $this->menuOption->getImage()->jsonSerialize();
+        }
+
         return [
             'name' => $this->name,
-            'menuOption' => $this->menuOption->jsonSerialize(),
+            'menuOption' => $menuOption,
             'inventory' => $this->inventory->jsonSerialize(),
             'helmet' => $this->armorInventory->getHelmet()->jsonSerialize(),
             'chestplate' => $this->armorInventory->getChestplate()->jsonSerialize(),
