@@ -50,7 +50,7 @@ class FreeForAllCommand extends OGPracticeCommand
                     return new MenuOption(
                         $menuOption->getText() . TextFormat::RESET . "\n"
                         . TextFormat::DARK_GRAY . 'In Fighting: '
-                        . TextFormat::GREEN . count($freeForAll->getPlayers()),
+                        . TextFormat::GREEN . count($freeForAll->getArena()->getWorld()->getPlayers()),
                         $menuOption->getImage()
                     );
                 }, $freeForAlls),
